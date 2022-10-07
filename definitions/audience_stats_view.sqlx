@@ -1,0 +1,34 @@
+-- This is an example SQLX file to help you learn the basics of Dataform.
+-- Visit https://cloud.google.com/dataform/docs/how-to for more information on how to configure your SQL workflow.
+
+-- You can delete this file, then commit and push your changes to your repository when you are ready.
+
+-- Config blocks allow you to configure, document, and test your data assets.
+config {
+  type: "view",
+  columns: {
+    social_account_id: "Social Account ID", // Column descriptions are pushed to BigQuery.
+    category: "",
+    tag: "",
+    percentage: "",
+    value: "",
+    token_valid: ""
+  }
+}
+
+-- The rest of a SQLX file contains your SELECT statement used to create the table.
+
+SELECT
+  sa.id AS social_account_id,
+  ai.category,
+  COALESCE(countries.name, aiv.tag) AS tag,
+  aiv.percentage,
+  aiv.value,
+  sa.token_valid
+FROM
+  `vamp-dw-prod.source_servalan_public.audience_insights` AS ai
+  JOIN `vamp-dw-prod.source_servalan_public.audience_insight_values` AS aiv ON aiv.audience_insight_id = ai.id
+  JOIN `vamp-dw-prod.source_servalan_public.social_accounts` AS sa ON sa.id = ai.social_account_id
+  LEFT JOIN `vamp-dw-prod.source_servalan_public.countries` AS countries ON countries.code = aiv.tag
+WHERE
+  ai.category IN ('countries', 'gender', 'gender_age', 'age')
