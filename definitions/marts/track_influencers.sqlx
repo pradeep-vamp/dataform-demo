@@ -1,0 +1,61 @@
+config { 
+    type: "incremental",
+    schema: "dataform_reporting_marts",
+    protected: true,
+    hermetic: false,
+    tags: ["15min"],
+    columns: {
+      id: "Social Account ID",
+      date_of_birth: "",
+      gender: "",
+      country_id: "",
+      state: "",
+      city: "",
+      postcode: "",
+      status_changed_at: "",
+      last_login_at: "",
+      last_active: "",
+      source: "",
+      notification_counter: "",
+      previous_status_id: "",
+      rating: "",
+      inserted_at: "",
+      updated_at: ""
+  }
+}
+
+
+pre_operations {
+  declare updated_at_checkpoint default (
+    ${when(incremental(),
+    `select max(updated_at) from ${self()}`,
+    `select timestamp(${contants.first_datetime})`)}
+  )
+}
+
+SELECT
+  inf.id,
+  inf.influencer_status_id,
+  CAST(inf.date_of_birth AS DATE FORMAT 'YYYY-MM-DD') AS date_of_birth,
+  inf.gender,
+  inf_cntry.country_id,
+  inf.state,
+  inf.city,
+  inf.postcode,
+  inf.status_changed_at,
+  inf.last_login_at,
+  inf.last_active,
+  inf.source,
+  inf.notification_counter,
+  inf.previous_status_id,
+  inf.rating,
+  inf.inserted_at,
+  inf.updated_at
+FROM
+  `${contants.project_id}.source_servalan_public.influencers` AS inf
+INNER JOIN
+  `${contants.project_id}.source_servalan_public.influencer_countries` AS inf_cntry
+ON
+  inf_cntry.influencer_id = inf.id
+WHERE inf.updated_at > updated_at_checkpoint
+

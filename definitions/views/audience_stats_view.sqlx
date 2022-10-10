@@ -1,0 +1,27 @@
+config {
+  type: "view",
+  schema: "dataform_reporting_view",
+  columns: {
+    social_account_id: "Social Account ID",
+    category: "",
+    tag: "",
+    percentage: "",
+    value: "",
+    token_valid: "",
+  }
+}
+
+SELECT
+  sa.id AS social_account_id,
+  ai.category,
+  COALESCE(countries.name, aiv.tag) AS tag,
+  aiv.percentage,
+  aiv.value,
+  sa.token_valid
+FROM
+  `${contants.project_id}.source_servalan_public.audience_insights` AS ai
+  JOIN `${contants.project_id}.source_servalan_public.audience_insight_values` AS aiv ON aiv.audience_insight_id = ai.id
+  JOIN `${contants.project_id}.source_servalan_public.social_accounts` AS sa ON sa.id = ai.social_account_id
+  LEFT JOIN `${contants.project_id}.source_servalan_public.countries` AS countries ON countries.code = aiv.tag
+WHERE
+  ai.category IN ('countries', 'gender', 'gender_age', 'age')
