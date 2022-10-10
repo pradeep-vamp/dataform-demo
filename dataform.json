@@ -1,8 +1,7 @@
 {
-  "defaultSchema": "dataform",
+  "defaultSchema": "dataform_demo",
   "assertionSchema": "dataform_assertions",
   "warehouse": "bigquery",
   "defaultDatabase": "vamp-dw-prod",
-  "defaultLocation": "EU"
+  "defaultLocation": "europe-west1"
 }
-    

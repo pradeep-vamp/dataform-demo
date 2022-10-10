@@ -1,0 +1,84 @@
+{
+  "schedules": [
+    {
+    "name": "15min",
+    "options": {
+      "includeDependencies": false,
+      "fullRefresh": false,
+      "tags": ["15min"]
+    },
+    "cron": "*/15 * * * *",
+    "notification": {
+      "onSuccess": true,
+      "onFailure": true
+    },
+    "notifications": [{
+      "events": ["failure"],
+      "channels": ["email pradeep", "email slack"]
+    },
+    {
+      "events": ["success"],
+      "channels": ["email-pradeep"]
+    }]
+  },
+  {
+    "name": "hourly",
+    "options": {
+      "includeDependencies": false,
+      "fullRefresh": false,
+      "tags": ["hourly"]
+    },
+    "cron": "57 */1 * * *",
+    "notification": {
+      "onSuccess": false,
+      "onFailure": false
+    },
+    "notifications": [
+      {
+        "events": ["failure"],
+        "channels": ["email-all"]
+      }
+    ]
+  },
+  {
+    "name": "daily",
+    "options": {
+      "includeDependencies": false,
+      "fullRefresh": false,
+      "tags": ["daily"]
+    },
+    "cron": "00 07 * * *",
+    "notification": {
+      "onSuccess": true,
+      "onFailure": true
+    },
+    "notifications": [{
+      "events": ["failure"],
+      "channels": ["email-pradeep", "email-slack"]
+    },
+    {
+      "events": ["success"],
+      "channels": ["email-pradeep"]
+    }]
+  }],
+  "notificationChannels": [
+    {
+      "name": "email-pradeep",
+      "email": {
+        "to": ["pradeep@vamp.me"]
+      }
+    },
+    {
+      "name": "email-all",
+      "email": {
+        "to": ["pradeep@vamp.me"]
+      }
+    },
+    {
+      "name": "email-slack",
+      "email": {
+        "to": ["d7g7o1d7e0c3c0x6@vamp-team.slack.com"]
+      }
+    }
+  ]
+}
